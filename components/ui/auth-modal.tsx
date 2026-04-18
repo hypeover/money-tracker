@@ -4,6 +4,7 @@ import * as React from "react";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { X, Mail, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import AnimatedOTPInput, { AnimatedInputOTP } from "../smoothui/animated-o-t-p-input";
 
 // Dummy icons for Google and Microsoft as Lucide doesn't have them
 const GoogleIcon = ({ className }: { className?: string }) => (
@@ -52,15 +53,25 @@ interface AuthModalProps {
    * Optional className for the trigger button
    */
   className?: string;
+  email?: string;
+  setEmail: (email: string) => void;
+  signInWithOtp
+  isOtpSent: boolean;
 }
 
 function AuthModal({
   triggerText = "Sign up / Sign in",
   onLogin,
   className,
+  email,
+  setEmail,
+  signInWithOtp,
+  isOtpSent
 }: AuthModalProps) {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [email, setEmail] = React.useState("");
+  const [value, setValue] = React.useState("");
+  const [isComplete, setIsComplete] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const container: Variants = {
     hidden: { opacity: 0, scale: 0.95 },
@@ -105,6 +116,12 @@ function AuthModal({
       color: "hover:bg-zinc-100 dark:hover:bg-zinc-800",
     },
   ];
+
+  const handleReset = () => {
+    setValue("");
+    setIsComplete(false);
+    setIsLoading(false);
+  };
 
   return (
     <>
@@ -194,13 +211,29 @@ function AuthModal({
                     placeholder="name@example.com"
                     className="h-10 w-full rounded-full border border-zinc-200 bg-zinc-50 pl-10 pr-10 text-sm outline-none transition-all focus:border-zinc-900 focus:bg-white focus:ring-1 focus:ring-zinc-900 dark:border-zinc-800 dark:bg-zinc-900/50 dark:focus:border-zinc-100 dark:focus:bg-zinc-900"
                   />
-                  <button
+                  <button onClick={() => signInWithOtp()}
                     className="absolute right-1 top-1/2 -translate-y-1/2 rounded-full h-8 w-8 flex items-center justify-center bg-zinc-900 text-zinc-50 transition-transform hover:scale-95 active:scale-90 dark:bg-zinc-50 dark:text-zinc-900"
                   >
                     <ArrowRight className="h-4 w-4" />
                   </button>
                 </div>
               </motion.div>
+              {isOtpSent && (
+                <motion.div variants={item}>
+                  <div className="flex justify-center flex-col">
+                    <div className="w-full mb-5 flex-col justify-center" >
+                      <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400" >We've sent 6 code to provieded e-mail </p>
+                    <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400" >Enter it below to continue</p>
+                    </div>
+                    <AnimatedOTPInput
+                      maxLength={6}
+                      onChange={setValue}
+                      onComplete={() => console.log(value)}
+                      value={value}
+                    />
+                  </div>
+                </motion.div>
+              )}
             </motion.div>
           </div>
         )}

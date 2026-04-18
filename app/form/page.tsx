@@ -1,25 +1,28 @@
-import React, { Suspense } from "react";
 import { ModeToggle } from "@/components/mode-toggle";
-import { AuthModal } from "@/components/ui/auth-modal";
+import Form from './login-page'
+import { createClient } from "@/lib/supabase/server";
 
 
-const Form = () => {
-  
+const FormPage = async () => {
 
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  console.log( { user });
 
   return (
     <div className="w-full h-screen bg-background flex content-center items-center justify-center">
       <div className="absolute inset-s-0 top-5 left-5 ">
         <ModeToggle />
       </div>
-      <Suspense>
-        <AuthModal />
-      </Suspense>
+      <Form />
     </div>
   );
 };
 
-export default Form;
+export default FormPage;
 
 /* 
 
