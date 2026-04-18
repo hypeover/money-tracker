@@ -46,7 +46,7 @@ function AnimatedInputOTP({
   value,
   onChange,
   onComplete,
-  maxLength = 6,
+  maxLength = 8,
   children,
   ...props
 }: AnimatedInputOTPProps & { children: ReactNode }) {
@@ -62,7 +62,7 @@ function AnimatedInputOTP({
       aria-label={props["aria-label"] || "One-time password input"}
       className={cn("disabled:cursor-not-allowed", className)}
       containerClassName={cn(
-        "flex items-center gap-2 has-disabled:opacity-50",
+        "flex items-center gap-1 has-disabled:opacity-50",
         containerClassName
       )}
       data-slot="input-otp"
@@ -90,7 +90,7 @@ function AnimatedInputOTPGroup({
   return (
     <motion.div
       animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
-      className={cn("flex items-center gap-2", className)}
+      className={cn("flex items-center gap-1", className)}
       data-slot="input-otp-group"
       initial={
         shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: INITIAL_Y }
@@ -140,7 +140,7 @@ function AnimatedInputOTPSlot({ index, className }: AnimatedInputOTPSlotProps) {
             }
       }
       className={cn(
-        "relative flex h-9 w-9 items-center justify-center rounded-md border border-zinc-300 bg-background text-sm shadow-sm outline-none transition-all aria-invalid:border-destructive data-[active=true]:z-10 data-[active=true]:border-ring data-[active=true]:ring-[3px] data-[active=true]:ring-ring/50 data-[active=true]:aria-invalid:border-destructive data-[active=true]:aria-invalid:ring-destructive/20 dark:border-zinc-700 dark:bg-input/30 dark:data-[active=true]:aria-invalid:ring-destructive/40",
+        "relative flex h-8 w-8 items-center justify-center rounded-md border border-zinc-300 bg-background text-sm shadow-sm outline-none transition-all aria-invalid:border-destructive data-[active=true]:z-10 data-[active=true]:border-ring data-[active=true]:ring-[3px] data-[active=true]:ring-ring/50 data-[active=true]:aria-invalid:border-destructive data-[active=true]:aria-invalid:ring-destructive/20 dark:border-zinc-700 dark:bg-input/30 dark:data-[active=true]:aria-invalid:ring-destructive/40",
         className
       )}
       data-active={isActive}
@@ -271,7 +271,7 @@ function AnimatedInputOTPSeparator() {
 
 // Main component that combines everything
 export function AnimatedOTPInput({
-  maxLength = 6,
+  maxLength = 8,
   className,
   value,
   onChange,
@@ -291,12 +291,14 @@ export function AnimatedOTPInput({
         <AnimatedInputOTPSlot index={0} />
         <AnimatedInputOTPSlot index={1} />
         <AnimatedInputOTPSlot index={2} />
+        <AnimatedInputOTPSlot index={3} />
       </AnimatedInputOTPGroup>
       <AnimatedInputOTPSeparator />
       <AnimatedInputOTPGroup>
-        <AnimatedInputOTPSlot index={3} />
         <AnimatedInputOTPSlot index={4} />
         <AnimatedInputOTPSlot index={5} />
+        <AnimatedInputOTPSlot index={6} />
+        <AnimatedInputOTPSlot index={7} />
       </AnimatedInputOTPGroup>
     </AnimatedInputOTP>
   );

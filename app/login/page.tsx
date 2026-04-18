@@ -24,26 +24,3 @@ const FormPage = async () => {
 
 export default FormPage;
 
-/* 
-
-const signIn = async (email : string) => {
-    "use server";
-
-    const supabase = createClient();
-
-    const { error, data } = await supabase.auth.signInWithOtp({
-      email: email,
-      options: {
-        shouldCreateUser: false,
-      },
-    })
-
-    if (error) {
-      console.log(error)
-    } else {
-      console.log(data)
-    }
-
-  };
-
-*/

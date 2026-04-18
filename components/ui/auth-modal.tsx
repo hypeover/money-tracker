@@ -4,7 +4,10 @@ import * as React from "react";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { X, Mail, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import AnimatedOTPInput, { AnimatedInputOTP } from "../smoothui/animated-o-t-p-input";
+import AnimatedOTPInput, {
+  AnimatedInputOTP,
+} from "../smoothui/animated-o-t-p-input";
+import { Button } from "./button";
 
 // Dummy icons for Google and Microsoft as Lucide doesn't have them
 const GoogleIcon = ({ className }: { className?: string }) => (
@@ -41,37 +44,26 @@ const GitHubIcon = ({ className }: { className?: string }) => (
 );
 
 interface AuthModalProps {
-  /**
-   * The text to display on the trigger button
-   */
-  triggerText?: string;
-  /**
-   * Callback when login is attempted
-   */
-  onLogin?: (provider: string) => void;
-  /**
-   * Optional className for the trigger button
-   */
   className?: string;
   email?: string;
-  setEmail: (email: string) => void;
-  signInWithOtp
+  signInWithOtp: (email: string) => Promise<void>;
   isOtpSent: boolean;
+  isValid: boolean;
+  verifyOtp: (token: string, email: string) => Promise<void>;
+  setIsValid: (isValid: boolean) => void;
 }
 
 function AuthModal({
-  triggerText = "Sign up / Sign in",
-  onLogin,
   className,
-  email,
-  setEmail,
   signInWithOtp,
-  isOtpSent
+  isOtpSent,
+  isValid,
+  verifyOtp,
+  setIsValid,
 }: AuthModalProps) {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
-  const [isComplete, setIsComplete] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [email, setEmail] = React.useState("");
+  const [token, setToken] = React.useState("");
 
   const container: Variants = {
     hidden: { opacity: 0, scale: 0.95 },
@@ -117,12 +109,6 @@ function AuthModal({
     },
   ];
 
-  const handleReset = () => {
-    setValue("");
-    setIsComplete(false);
-    setIsLoading(false);
-  };
-
   return (
     <>
       <button
@@ -132,12 +118,12 @@ function AuthModal({
           className,
         )}
       >
-        {triggerText}
+        Sign up / Sign in
       </button>
 
       <AnimatePresence>
         {isOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-0">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-0">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -162,7 +148,7 @@ function AuthModal({
                 </button>
               </div>
 
-              <motion.div variants={item} className="mb-8 text-center">
+              <motion.div variants={item} className="mb-6 text-center">
                 <h2 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
                   Welcome back
                 </h2>
@@ -173,12 +159,11 @@ function AuthModal({
 
               <motion.div
                 variants={item}
-                className="flex flex-row justify-center gap-3 mb-8"
+                className="flex flex-row justify-center gap-3 mb-6"
               >
                 {socialButtons.map((btn, i) => (
                   <button
                     key={i}
-                    onClick={() => onLogin?.(btn.label)}
                     className={cn(
                       "flex aspect-square items-center justify-center rounded-2xl border border-zinc-200 p-4 bg-white transition-all hover:scale-105 active:scale-95 dark:border-zinc-800 dark:bg-zinc-950",
                       btn.color,
@@ -211,7 +196,8 @@ function AuthModal({
                     placeholder="name@example.com"
                     className="h-10 w-full rounded-full border border-zinc-200 bg-zinc-50 pl-10 pr-10 text-sm outline-none transition-all focus:border-zinc-900 focus:bg-white focus:ring-1 focus:ring-zinc-900 dark:border-zinc-800 dark:bg-zinc-900/50 dark:focus:border-zinc-100 dark:focus:bg-zinc-900"
                   />
-                  <button onClick={() => signInWithOtp()}
+                  <button
+                    onClick={() => signInWithOtp(email)}
                     className="absolute right-1 top-1/2 -translate-y-1/2 rounded-full h-8 w-8 flex items-center justify-center bg-zinc-900 text-zinc-50 transition-transform hover:scale-95 active:scale-90 dark:bg-zinc-50 dark:text-zinc-900"
                   >
                     <ArrowRight className="h-4 w-4" />
@@ -221,17 +207,40 @@ function AuthModal({
               {isOtpSent && (
                 <motion.div variants={item}>
                   <div className="flex justify-center flex-col">
-                    <div className="w-full mb-5 flex-col justify-center" >
-                      <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400" >We've sent 6 code to provieded e-mail </p>
-                    <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400" >Enter it below to continue</p>
+                    <div className="w-full mb-4 flex-col justify-center">
+                      <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+                        We've sent 6 code to provided e-mail:
+                      </p>
+                      <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium">
+                        {email}
+                      </p>
+                      <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+                        Enter it below to continue
+                      </p>
                     </div>
-                    <AnimatedOTPInput
-                      maxLength={6}
-                      onChange={setValue}
-                      onComplete={() => console.log(value)}
-                      value={value}
-                    />
+                    <div className="w-full flex justify-center mb-4">
+                      <AnimatedOTPInput
+                        maxLength={8}
+                        onChange={setToken}
+                        onComplete={() => verifyOtp(token, email)}
+                        value={token}
+                      />
+                    </div>
                   </div>
+                  {isValid && (
+                    <motion.div variants={item}>
+                      <p className="text-sm text-destructive">
+                        Token has expired or is invalid, try again
+                      </p>
+                      <Button
+                        className="w-full rounded-lg mt-4 shadow-md"
+                        onClick={() => {setToken(""); setIsValid(false)}}
+                        variant="outline"
+                      >
+                        Reset Code
+                      </Button>
+                    </motion.div>
+                  )}
                 </motion.div>
               )}
             </motion.div>
