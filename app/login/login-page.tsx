@@ -20,7 +20,9 @@ const Form = () => {
       setIsOtpSent(true);
       setIsValid(false);
     } else {
-      console.error(result.error);
+      console.error("Login error:", result.error);
+      // You can also show this error to the user
+      alert(`Login failed: ${result.error}`);
     }
   };
 
