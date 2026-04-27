@@ -1,7 +1,7 @@
 import React from "react";
 import { createClient } from "@/lib/supabase/server";
 import TopBar from "./top-bar";
-import InputNumber from "./number-inputs";
+import AnimatedNumberCounter from "./number-inputs";
 
 const Home = async () => {
   const supabase = await createClient();
@@ -16,7 +16,7 @@ const Home = async () => {
       <TopBar />
       <div className="h-screen w-full flex flex-col justify-center items-center" >
         {user?.user_metadata.email}
-        <InputNumber />
+        <AnimatedNumberCounter />
       </div>
     </div>
   );

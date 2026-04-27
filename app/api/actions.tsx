@@ -3,7 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 
 type OtpActionResult =
-  | { success: true }
+  | { success: true; user?: any }
   | { success: false; error: string };
 
 export async function loginWithOtp(email: string): Promise<OtpActionResult> {
@@ -31,12 +31,28 @@ export async function verifyOtp(email: string, token: string): Promise<OtpAction
     return { success: false, error: error.message };
   }
 
-  return { success: true };
+  // Get the user after verification
+  const { data: { user } } = await supabase.auth.getUser();
+
+  return { success: true, user };
 }
 
 export async function logout(): Promise<OtpActionResult> {
   const supabase = await createClient();
   const { error } = await supabase.auth.signOut();
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  return { success: true };
+}
+
+export async function setUserName(name: string): Promise<OtpActionResult> {
+  const supabase = await createClient();
+  const { error } = await supabase.auth.updateUser({
+    data: { name }
+  });
 
   if (error) {
     return { success: false, error: error.message };

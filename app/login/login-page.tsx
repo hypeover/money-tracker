@@ -28,7 +28,11 @@ const Form = () => {
     const result = await verifyOtpAction(email, token);
 
     if (result.success) {
-      router.push("/home");
+      if (result.user?.user_metadata?.name) {
+        router.push("/home");
+      } else {
+        router.push("/name");
+      }
     } else {
       console.error(result.error);
       setIsValid(true);
@@ -51,27 +55,3 @@ const Form = () => {
 };
 
 export default Form;
-
-/* 
-
-const signIn = async (email : string) => {
-    "use server";
-
-    const supabase = createClient();
-
-    const { error, data } = await supabase.auth.signInWithOtp({
-      email: email,
-      options: {
-        shouldCreateUser: false,
-      },
-    })
-
-    if (error) {
-      console.log(error)
-    } else {
-      console.log(data)
-    }
-
-  };
-
-*/
