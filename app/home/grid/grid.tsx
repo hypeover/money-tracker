@@ -1,5 +1,5 @@
 import React from "react";
-import SpentInput from "./add-spent";
+import Tabs from "./tabs";
 
 const Grid = () => {
   return (
@@ -7,7 +7,7 @@ const Grid = () => {
       <div className="w-full h-full">
         <div className="grid gap-3 md:gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 grid-rows-auto md:grid-rows-4 lg:grid-rows-5 h-full w-full p-4 md:p-6 lg:p-20">
           <div className="bg-primary text-primary-foreground flex flex-col justify-between rounded-2xl p-6 md:row-span-2 lg:row-span-2">
-            <SpentInput />
+            <Tabs />
 
 
           </div>
