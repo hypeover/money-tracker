@@ -1,23 +1,41 @@
-import React, { useState } from 'react'
+"use client";
+import { Button } from "@/components/ui/button";
+import { useState, type FormEvent } from "react";
 
-const TabInput = () => {
-
-    const [income, setIncome] = useState('')
-
-    const handleChange = (e) => {
-        setIncome(e.target.value)
-        console.log(new Intl.NumberFormat("en-US", { style: "currency", currency: "PLN" }).format(Number(income)))
-    }
-
-
-    return (
-        <div>
-            <span contentEditable={true} inputMode='decimal'  className='min-w-[1ch] p-0'>124124</span>
-            <input value={income} maxLength={8}  tabIndex={-1} onChange={handleChange} type="number" />
-        </div>
-    )
+interface TabInputProps {
+  placeholder: string;
+  onSave: (amount: string) => Promise<void>;
 }
 
-export default TabInput
+const TabInput = ({ placeholder, onSave }: TabInputProps) => {
+  const [value, setValue] = useState("");
+  const [saving, setSaving] = useState(false);
 
-//https://hello-mat.com/design-engineering/component/number-flow-input
+  const handleSave = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!value) return;
+    setSaving(true);
+
+    await onSave(value);
+
+    setValue("");
+    setSaving(false);
+  };
+
+  return (
+    <form className="flex gap-4 items-end" onSubmit={handleSave}>
+      <input
+        className="text-2xl"
+        type="number"
+        placeholder={"add " + placeholder}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+      />
+      <Button type="submit" disabled={!value || saving}>
+        {saving ? "Saving..." : "Save"}
+      </Button>
+    </form>
+  );
+};
+
+export default TabInput;

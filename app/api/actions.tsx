@@ -31,7 +31,6 @@ export async function verifyOtp(email: string, token: string): Promise<OtpAction
     return { success: false, error: error.message };
   }
 
-  // Get the user after verification
   const { data: { user } } = await supabase.auth.getUser();
 
   return { success: true, user };
