@@ -1,37 +1,65 @@
-import React from 'react'
-import { Tabs } from "@/components/ui/tabs";
+"use client"
+import React, { useEffect, useState } from 'react'
+import {
+  Tabs,
+  TabsContent,
+  TabsContents,
+  TabsList,
+  TabsTrigger,
+} from '@/components/animate-ui/components/animate/tabs';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import TabInput from './tab-input';
 
 const TabsCard = () => {
+  
 
-
-  const tabs = [
-    {
-      title: "Income",
-      value: "product",
-      content: (
-        <div className="w-full overflow-hidden relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold text-white bg-gradient-to-br from-purple-700 to-violet-900">
-          <p>Product Tab</p>
-          
-        </div>
-      ),
-    },
-    {
-      title: "Expenses",
-      value: "services",
-      content: (
-        <div className="w-full overflow-hidden relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold text-white bg-gradient-to-br from-purple-700 to-violet-900">
-          <p>Services tab</p>
-          
-        </div>
-      ),
-    }
-  ];
 
   return (
-    <div className="h-[20rem] md:h-[40rem] [perspective:1000px] relative b flex flex-col max-w-5xl mx-auto w-full  items-start justify-start my-40">
-      <Tabs tabs={tabs} />
-    </div>
+    <Tabs className='h-full w-full relative' defaultValue="income">
+        <TabsList className='absolute -inset-y-12' >
+          <TabsTrigger value="income">Income</TabsTrigger>
+          <TabsTrigger value="expense">Expense</TabsTrigger>
+        </TabsList>
+        <Card className="shadow-none py-0 bg-transparent h-full ">
+          <TabsContents className="py-6 h-full ">
+            <TabsContent value="income" className="flex flex-col gap-6">
+              <CardHeader>
+                <CardTitle>Add income</CardTitle>
+              </CardHeader>
+              <CardContent className="grid gap-6">
+                <TabInput />
+              </CardContent>
+
+            </TabsContent>
+
+
+            <TabsContent value="expense" className="flex flex-col gap-6">
+              <CardHeader>
+                <CardTitle>Add expense</CardTitle>
+                <CardDescription>
+                  Change your password here. After saving, you&apos;ll be logged
+                  out.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-6">
+                <div className="grid gap-3">
+                  <Input placeholder='Expense' />
+                </div>
+              </CardContent>
+            </TabsContent>
+          </TabsContents>
+        </Card>
+      </Tabs>
   )
 }
 
 export default TabsCard
+
+//https://animate-ui.com/docs/components/animate/tabs
