@@ -8,6 +8,7 @@ interface FinanceEntry {
   id: string;
   amount: number;
   entry_type: string;
+  currency: string;
 }
 
 const Grid = () => {
@@ -35,12 +36,12 @@ const Grid = () => {
     loadEntries();
   }, []);
 
-  const handleSave = async (amount: string, type: string) => {
+  const handleSave = async (amount: string, type: string, currency: string) => {
     try {
       const response = await fetch("/api/finance", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount, type }),
+        body: JSON.stringify({ amount, type, currency }),
       });
 
       if (!response.ok) {

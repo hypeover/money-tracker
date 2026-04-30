@@ -12,7 +12,7 @@ import {
 import TabInput from "./tab-input";
 
 interface AddTabsProps {
-  onSave: (amount: string, type: string) => Promise<void>;
+  onSave: (amount: string, type: string, currency: string) => Promise<void>;
 }
 
 const AddTabs = ({ onSave }: AddTabsProps) => {
@@ -25,12 +25,12 @@ const AddTabs = ({ onSave }: AddTabsProps) => {
       <Card className="shadow-none py-0 bg-transparent h-full">
         <TabsContents className="py-6 h-full">
           <TabsContent value="income" className="flex flex-col gap-6 px-8">
-            <p className="">add income</p>
-            <TabInput placeholder="income" onSave={(amount) => onSave(amount, "income")} />
+            <p className="text-2xl font-semibold">Add income</p>
+            <TabInput placeholder="income" onSave={(amount, currency) => onSave(amount, "income", currency)} />
           </TabsContent>
           <TabsContent value="expense" className="flex flex-col gap-6 px-8">
-            <p>add expense</p>
-            <TabInput placeholder="expense" onSave={(amount) => onSave(amount, "expense")} />
+            <p className="text-2xl font-semibold">Add expense</p>
+            <TabInput placeholder="expense" onSave={(amount, currency) => onSave(amount, "expense", currency)} />
           </TabsContent>
         </TabsContents>
       </Card>

@@ -32,7 +32,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const { amount, type } = body;
+  const { amount, type, currency } = body;
 
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
   }
 
   const parsedAmount = parseFloat(amount);
-  if (Number.isNaN(parsedAmount) || !type) {
+  if (Number.isNaN(parsedAmount) || !type || !currency) {
     return new Response(JSON.stringify({ error: "Invalid request" }), {
       status: 400,
       headers: { "Content-Type": "application/json" },
@@ -58,6 +58,7 @@ export async function POST(request: Request) {
       {
         amount: parsedAmount,
         entry_type: type,
+        currency,
         operation_date: new Date().toISOString().split("T")[0],
         user_id: user.id,
       },

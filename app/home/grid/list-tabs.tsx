@@ -13,12 +13,12 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ListTabsProps {
-  entries: Array<{ id: string; amount: number; entry_type: string }>;
+  entries: Array<{ id: string; amount: number; entry_type: string; currency?: string }>;
 }
 
 const ListTabs = ({ entries }: ListTabsProps) => {
   const validEntries = entries.filter(
-    (entry): entry is { id: string; amount: number; entry_type: string } =>
+    (entry): entry is { id: string; amount: number; entry_type: string, currency: string } =>
       Boolean(entry) && typeof entry === "object" && typeof entry.entry_type === "string"
   );
 
@@ -40,8 +40,9 @@ const ListTabs = ({ entries }: ListTabsProps) => {
                 <p>No income entries yet.</p>
               ) : (
                 incomeEntries.map((entry) => (
-                  <div key={entry.id}>
+                  <div key={entry.id} className="flex flex-row justify-between" >
                     <p>{entry.amount}</p>
+                    <p>{entry.currency}</p>
                   </div>
                 ))
               )}
@@ -54,8 +55,9 @@ const ListTabs = ({ entries }: ListTabsProps) => {
                 <p>No expense entries yet.</p>
               ) : (
                 expenseEntries.map((entry) => (
-                  <div key={entry.id}>
+                  <div key={entry.id} className="flex flex-row justify-between">
                     <p>{entry.amount}</p>
+                    <p>{entry.currency}</p>
                   </div>
                 ))
               )}
